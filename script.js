@@ -43,25 +43,44 @@ function showCategorySection(type){
   videos.filter(v=>v.type===type).forEach(v=>grid.innerHTML+=createCard(v));
 }
 
-// Sidebar overlay
-function toggleSidebar(){ document.getElementById("sidebarOverlay").classList.toggle("active"); }
-function renderSidebarContent(){
-  const container=document.getElementById("sidebarContent"); container.innerHTML="";
-  for(const key in members){
-    const m=members[key]; const div=document.createElement("div");
-    div.className="member"; div.innerHTML=`<img src="${m.avatar}"><span>${m.name}</span>`;
-    div.onclick=()=>{showMemberSection(key); toggleSidebar();}; container.appendChild(div);
+// Sidebar toggle sekarang hilang tombol ✕, klik luar overlay untuk tutup
+function toggleSidebar(){
+  const sidebar = document.getElementById("sidebarOverlay");
+  sidebar.classList.toggle("active");
+
+  if(sidebar.classList.contains("active")){
+    // tambahkan listener klik luar untuk tutup
+    document.addEventListener("click", outsideClickListener);
+  } else {
+    document.removeEventListener("click", outsideClickListener);
   }
-  const groups=["Group A","Group B"];
-  groups.forEach(g=>{
-    const div=document.createElement("div"); div.className="member"; div.innerHTML=`<img src="https://i.imgur.com/6VBx3io.png"><span>${g}</span>`;
-    div.onclick=()=>{showGroupSection(g); toggleSidebar();}; container.appendChild(div);
-  });
 }
 
-function showMemberSection(member){ document.getElementById("homeSection").classList.add("hidden"); const container=document.getElementById("categorySection"); container.innerHTML=`<h2>${member} Channel</h2><div class="grid-bottom"></div>`; container.classList.remove("hidden"); const grid=container.querySelector(".grid-bottom"); videos.filter(v=>v.member===member).forEach(v=>grid.innerHTML+=createCard(v)); }
-function showGroupSection(group){ alert(`Group Section: ${group}`); }
+function outsideClickListener(e){
+  const sidebar = document.getElementById("sidebarOverlay");
+  if(!sidebar.contains(e.target) && !document.querySelector('.menu-icon').contains(e.target)){
+    sidebar.classList.remove("active");
+    document.removeEventListener("click", outsideClickListener);
+  }
+}
 
+// Render sidebar avatars
+function renderSidebarContent(){
+  const container=document.getElementById("sidebarOverlay");
+  container.innerHTML="";
+  for(const key in members){
+    const m=members[key];
+    const div=document.createElement("div");
+    div.className="member";
+    div.style.display="flex";
+    div.style.alignItems="center";
+    div.style.gap="15px"; // jarak antar avatar lebih lega
+    div.style.cursor="pointer";
+    div.innerHTML=`<img src="${m.avatar}" style="width:50px;height:50px;border-radius:50%"><span>${m.name}</span>`;
+    div.onclick=()=>{ showMemberSection(key); toggleSidebar(); };
+    container.appendChild(div);
+  }
+}
 // Load database
 fetch("https://opensheet.elk.sh/16IveyFW68vwyVHRIVH9MU0Jblh6HjUQ3PQU_QiE2C8c/videos")
 .then(res=>res.json())
