@@ -1,41 +1,29 @@
-body{
-  margin:0; background:#0f0f0f; font-family:Arial; color:white;
-}
+body{margin:0; background:#0f0f0f; font-family:Arial; color:white;}
 
 /* Header */
-header.banner{
-  display:flex; align-items:center; justify-content:center; position:relative;
-  padding:25px; background:#151515;
-}
-header .menu-icon{
-  position:absolute; left:20px; top:50%; transform:translateY(-50%);
-  font-size:24px; cursor:pointer;
-}
+header.banner{display:flex; align-items:center; justify-content:center; position:relative; padding:25px; background:#151515;}
+header .menu-icon{position:absolute; left:20px; top:50%; transform:translateY(-50%); font-size:24px; cursor:pointer;}
 header h1{margin:0; cursor:pointer;}
-#searchBar{margin-top:10px; width:80%; max-width:600px; margin-left:auto; margin-right:auto; padding:6px 10px; border-radius:6px; border:none;}
 
-/* Home Preview Horizontal Row */
-.row-horizontal{
-  display:flex; gap:12px; overflow-x:auto; padding:10px;
-}
+/* Horizontal row preview */
+.row-horizontal{display:flex; gap:12px; overflow-x:auto; padding:10px;}
 .row-horizontal .card{flex:0 0 auto; width:180px;}
 
-/* Grid Kategori Menu */
+/* Grid menu kategori (Grab style) */
 .grid-menu{
-  display:grid; grid-template-columns:repeat(auto-fit,minmax(120px,1fr)); gap:10px; margin:20px 10px;
+  display:grid; grid-template-columns:repeat(auto-fit,minmax(100px,1fr));
+  gap:10px; margin:20px 10px;
 }
 .grid-menu button{
-  padding:10px; background:#222; border:none; color:white; cursor:pointer; border-radius:8px;
-  text-align:center; transition:0.2s;
+  padding:20px; background:#222; border:none; color:white;
+  cursor:pointer; border-radius:12px; text-align:center; font-weight:bold; transition:0.2s;
 }
 .grid-menu button:hover{background:#333; transform:translateY(-2px);}
 
-/* Section Konten */
-.section{margin:20px 10px;}
-.section h2{margin-bottom:10px;}
-.grid-bottom{
-  display:grid; gap:12px; grid-template-columns:repeat(auto-fit,minmax(120px,1fr));
-}
+/* Section kategori fullscreen */
+#categorySection{display:flex; flex-direction:column; padding:10px;}
+#categorySection.hidden{display:none;}
+.grid-bottom{display:grid; gap:12px; grid-template-columns:repeat(auto-fit,minmax(120px,1fr));}
 @media(max-width:768px){.grid-bottom{grid-template-columns:repeat(3,1fr);}}
 
 .card{cursor:pointer;}
@@ -49,17 +37,10 @@ header h1{margin:0; cursor:pointer;}
 .info{opacity:0.7;}
 
 /* Sidebar Overlay */
-#sidebarOverlay{
-  position:fixed; top:0; left:-250px; width:250px; height:100%; background:rgba(20,20,20,0.95);
-  color:white; display:flex; flex-direction:column; padding:20px 10px; gap:12px; transition:left 0.3s; z-index:1000;
-}
+#sidebarOverlay{position:fixed; top:0; left:-250px; width:250px; height:100%; background:rgba(20,20,20,0.95);
+  color:white; display:flex; flex-direction:column; padding:20px 10px; gap:12px; transition:left 0.3s; z-index:1000;}
 #sidebarOverlay.active{left:0;}
 .sidebarHeader{display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;}
 .sidebarHeader .close-btn{cursor:pointer;}
 #sidebarContent .member{display:flex; align-items:center; gap:10px; cursor:pointer;}
 #sidebarContent .member img{width:50px; height:50px; border-radius:50%; flex-shrink:0;}
-
-
-
-
-
