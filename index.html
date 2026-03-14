@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,41 +11,32 @@
 <header class="banner">
   <div class="menu-icon" onclick="toggleSidebar()">☰</div>
   <h1 id="homeBtn">Pandavva Archive</h1>
+  <input type="text" id="searchBar" placeholder="Search...">
 </header>
 
-<div class="search-bar">
-  <input type="text" id="searchInput" placeholder="Search videos...">
+<!-- Sidebar Overlay -->
+<aside id="sidebarOverlay">
+  <div class="sidebarHeader">
+    <span>Channels</span>
+    <span class="close-btn" onclick="toggleSidebar()">✕</span>
+  </div>
+  <div id="sidebarContent"></div>
+</aside>
+
+<!-- Home Preview -->
+<div id="homePreview">
+  <h2 style="margin-left:10px;">Upcoming</h2>
+  <div class="row-horizontal" id="row-upcoming"></div>
+
+  <h2 style="margin-left:10px;">Latest</h2>
+  <div class="row-horizontal" id="row-latest"></div>
 </div>
 
-<div class="main-container">
+<!-- Grid Kategori -->
+<div class="grid-menu" id="categoryMenu"></div>
 
-  <!-- Sidebar -->
-  <aside id="sidebar"></aside>
-
-  <!-- Konten utama -->
-  <main id="mainContent">
-
-    <!-- Home Preview -->
-    <section id="homePreview">
-      <h2>Upcoming</h2>
-      <div class="row" id="upcomingRow"></div>
-
-      <h2>Latest</h2>
-      <div class="row" id="latestRow"></div>
-    </section>
-
-    <!-- Grid Menu Kategori -->
-    <section id="categoryMenu" class="grid-menu"></section>
-
-    <!-- Section Konten Per Kategori / Member -->
-    <section id="contentSections"></section>
-
-    <!-- Grid bawah (semua video) -->
-    <section id="gridBottom" class="grid-bottom"></section>
-
-  </main>
-
-</div>
+<!-- Content Sections -->
+<div id="contentSections"></div>
 
 <script src="script.js"></script>
 </body>
