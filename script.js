@@ -5,14 +5,14 @@ const members = {
   "Nakula Nalendra": { name:"Nakula Nalendra", avatar:"https://unavatar.io/youtube/@Nakula_Nalendra" }
 };
 
-// ambil ID YouTube
+// Ambil ID YouTube
 function getID(url){
   const regExp = /(?:youtube\.com\/(?:live\/|watch\?v=)|youtu\.be\/)([^?&]+)/;
   const match = url.match(regExp);
   return match ? match[1] : null;
 }
 
-// buat card video
+// Buat card
 function createCard(v){
   const id = getID(v.url);
   if(!id) return "";
@@ -32,26 +32,26 @@ function createCard(v){
         <div class="info">${v.date}</div>
       </div>
     </div>
-  </div>
-  `;
+  </div>`;
 }
 
-// Home preview
+// Home Preview
 function renderHomePreview(){
   const upcomingRow = document.getElementById("upcomingRow");
   const latestRow = document.getElementById("latestRow");
   upcomingRow.innerHTML = "";
   latestRow.innerHTML = "";
 
-  const upcoming = videos.filter(v=>v.upcoming);
+  const upcoming = videos.filter(v=>v.upcoming).slice(0,10);
   const latest = videos.filter(v=>!v.upcoming)
-                       .sort((a,b)=> new Date(b.date) - new Date(a.date));
+                       .sort((a,b)=> new Date(b.date)-new Date(a.date))
+                       .slice(0,10);
 
   upcoming.forEach(v=>upcomingRow.innerHTML+=createCard(v));
   latest.forEach(v=>latestRow.innerHTML+=createCard(v));
 }
 
-// Sidebar member
+// Sidebar
 function renderSidebar(){
   const sidebar = document.getElementById("sidebar");
   sidebar.innerHTML="";
@@ -84,23 +84,20 @@ function scrollToCategory(type){
   if(section) section.scrollIntoView({behavior:"smooth"});
 }
 
-// Konten per kategori / member
+// Konten per kategori/member
 function renderContentSections(memberFilter=null){
   const container = document.getElementById("contentSections");
   container.innerHTML="";
-
   let filtered = memberFilter ? videos.filter(v=>v.member===memberFilter) : videos;
 
   const types = [...new Set(filtered.map(v=>v.type))];
-
   types.forEach(type=>{
     const section = document.createElement("div");
     section.className="section";
     section.id = `section-${type}`;
     section.innerHTML = `
       <div class="sectionHeader"><h2>${type}</h2></div>
-      <div class="row"></div>
-    `;
+      <div class="row"></div>`;
     container.appendChild(section);
     const row = section.querySelector(".row");
     filtered.filter(v=>v.type===type).forEach(v=>{
@@ -109,16 +106,32 @@ function renderContentSections(memberFilter=null){
   });
 }
 
-// Channel member
+// Member channel
 function renderMemberChannel(member){
   renderContentSections(member);
+}
+
+// Grid bawah (semua video)
+function renderGridBottom(){
+  const gridContainer = document.getElementById("gridBottom");
+  gridContainer.innerHTML="";
+  const filtered = videos.filter(v=>!v.upcoming);
+  filtered.forEach(v=>{
+    const div = document.createElement("div");
+    div.innerHTML = createCard(v);
+    gridContainer.appendChild(div);
+  });
+}
+
+// Toggle sidebar (for mobile)
+function toggleSidebar(){
+  const sidebar = document.getElementById("sidebar");
+  sidebar.style.display = sidebar.style.display==="flex"?"none":"flex";
 }
 
 // Main
 document.addEventListener("DOMContentLoaded",()=>{
   fetch("https://opensheet.elk.sh/16IveyFW68vwyVHRIVH9MU0Jblh6HjUQ3PQU_QiE2C8c/videos")
-
-    
   .then(res=>res.json())
   .then(data=>{
     videos = data.map(v=>({...v, upcoming:v.upcoming==="TRUE" || v.upcoming===true}));
@@ -126,11 +139,21 @@ document.addEventListener("DOMContentLoaded",()=>{
     renderSidebar();
     renderCategoryMenu();
     renderContentSections();
-  })
-  .catch(err=>console.error("Fetch error:",err));
+    renderGridBottom();
+  });
 
   document.getElementById("homeBtn").onclick = ()=>{
     renderHomePreview();
     renderContentSections();
   };
+
+  // Optional: search functionality
+  document.getElementById("searchInput").addEventListener("input", e=>{
+    const query = e.target.value.toLowerCase();
+    renderContentSections();
+    document.querySelectorAll(".card").forEach(card=>{
+      const title = card.querySelector(".title").innerText.toLowerCase();
+      card.style.display = title.includes(query)?"block":"none";
+    });
+  });
 });
