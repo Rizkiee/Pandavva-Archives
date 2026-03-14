@@ -1,159 +1,122 @@
-let videos = [];
-const members = {
-  "Pandavva": { name:"Pandavva", avatar:"https://unavatar.io/youtube/@PANDAVVA" },
-  "Sadewa Sagara": { name:"Sadewa Sagara", avatar:"https://unavatar.io/youtube/@Sadewa_Sagara" },
-  "Nakula Nalendra": { name:"Nakula Nalendra", avatar:"https://unavatar.io/youtube/@Nakula_Nalendra" }
+// Data awal (bisa diganti fetch dari Sheet)
+let videos=[];
+
+const members={
+  "Pandavva":{name:"Pandavva", avatar:"https://unavatar.io/youtube/@PANDAVVA"},
+  "Sadewa Sagara":{name:"Sadewa Sagara", avatar:"https://unavatar.io/youtube/@Sadewa_Sagara"},
+  "Nakula Nalendra":{name:"Nakula Nalendra", avatar:"https://unavatar.io/youtube/@Nakula_Nalendra"}
 };
 
 // Ambil ID YouTube
-function getID(url){
-  const regExp = /(?:youtube\.com\/(?:live\/|watch\?v=)|youtu\.be\/)([^?&]+)/;
-  const match = url.match(regExp);
-  return match ? match[1] : null;
+function getID(url){ 
+  const regExp=/(?:youtube\.com\/(?:live\/|watch\?v=)|youtu\.be\/)([^?&]+)/;
+  const match=url.match(regExp); 
+  return match?match[1]:null; 
 }
 
-// Buat card
+// Buat card video
 function createCard(v){
-  const id = getID(v.url);
-  if(!id) return "";
-  const thumb = `https://i.ytimg.com/vi/${id}/hqdefault.jpg`;
-  const avatar = members[v.member]?.avatar || "";
-  return `
-  <div class="card" onclick="window.open('${v.url}','_blank')">
-    <div class="thumb">
-      <img src="${thumb}">
-      <div class="duration">${v.duration}</div>
-    </div>
+  const id=getID(v.url); if(!id) return "";
+  const thumb=`https://i.ytimg.com/vi/${id}/hqdefault.jpg`;
+  const avatar=members[v.member]?.avatar||"";
+  return `<div class="card" onclick="window.open('${v.url}','_blank')">
+    <div class="thumb"><img src="${thumb}"><div class="duration">${v.duration}</div></div>
     <div class="title">${v.title}</div>
-    <div class="meta">
-      <img class="avatar" src="${avatar}">
-      <div class="text">
-        <div>${v.member}</div>
-        <div class="info">${v.date}</div>
-      </div>
+    <div class="meta"><img class="avatar" src="${avatar}">
+      <div class="text"><div>${v.member}</div><div class="info">${v.date}</div></div>
     </div>
   </div>`;
 }
 
-// Home Preview
+// Render Home Preview
 function renderHomePreview(){
-  const upcomingRow = document.getElementById("upcomingRow");
-  const latestRow = document.getElementById("latestRow");
-  upcomingRow.innerHTML = "";
-  latestRow.innerHTML = "";
-
-  const upcoming = videos.filter(v=>v.upcoming).slice(0,10);
-  const latest = videos.filter(v=>!v.upcoming)
-                       .sort((a,b)=> new Date(b.date)-new Date(a.date))
-                       .slice(0,10);
-
-  upcoming.forEach(v=>upcomingRow.innerHTML+=createCard(v));
-  latest.forEach(v=>latestRow.innerHTML+=createCard(v));
+  const upcoming=document.getElementById("row-upcoming");
+  const latest=document.getElementById("row-latest");
+  upcoming.innerHTML=""; latest.innerHTML="";
+  const sorted=videos.sort((a,b)=> new Date(b.date)-new Date(a.date));
+  sorted.slice(0,10).forEach(v=>{
+    if(v.type.toLowerCase()==="upcoming") upcoming.innerHTML+=createCard(v);
+    else latest.innerHTML+=createCard(v);
+  });
 }
 
-// Sidebar
-function renderSidebar(){
-  const sidebar = document.getElementById("sidebar");
-  sidebar.innerHTML="";
-  for(const key in members){
-    const m = members[key];
-    const div = document.createElement("div");
-    div.className="member";
-    div.innerHTML=`<img src="${m.avatar}"><span>${m.name}</span>`;
-    div.onclick = ()=>renderMemberChannel(key);
-    sidebar.appendChild(div);
-  }
-}
-
-// Grid kategori
+// Grid Kategori
 function renderCategoryMenu(){
-  const categoryMenu = document.getElementById("categoryMenu");
+  const categoryMenu=document.getElementById("categoryMenu");
   categoryMenu.innerHTML="";
-  const types = [...new Set(videos.map(v=>v.type))];
+  const types=[...new Set(videos.map(v=>v.type))];
   types.forEach(type=>{
-    const btn = document.createElement("button");
-    btn.innerText = type;
-    btn.onclick = ()=>scrollToCategory(type);
+    const btn=document.createElement("button");
+    btn.innerText=type;
+    btn.onclick=()=>scrollToCategory(type);
     categoryMenu.appendChild(btn);
   });
 }
 
 // Scroll ke section kategori
 function scrollToCategory(type){
-  const section = document.getElementById(`section-${type}`);
+  const section=document.getElementById(`section-${type}`);
   if(section) section.scrollIntoView({behavior:"smooth"});
 }
 
-// Konten per kategori/member
+// Section grid konten
 function renderContentSections(memberFilter=null){
-  const container = document.getElementById("contentSections");
+  const container=document.getElementById("contentSections");
   container.innerHTML="";
-  let filtered = memberFilter ? videos.filter(v=>v.member===memberFilter) : videos;
-
-  const types = [...new Set(filtered.map(v=>v.type))];
+  let filtered=memberFilter?videos.filter(v=>v.member===memberFilter):videos;
+  const types=[...new Set(filtered.map(v=>v.type))];
   types.forEach(type=>{
-    const section = document.createElement("div");
-    section.className="section";
-    section.id = `section-${type}`;
-    section.innerHTML = `
-      <div class="sectionHeader"><h2>${type}</h2></div>
-      <div class="row"></div>`;
+    const section=document.createElement("div");
+    section.className="section"; section.id=`section-${type}`;
+    section.innerHTML=`<h2>${type}</h2><div class="grid-bottom"></div>`;
     container.appendChild(section);
-    const row = section.querySelector(".row");
-    filtered.filter(v=>v.type===type).forEach(v=>{
-      row.innerHTML+=createCard(v);
-    });
+    const grid=section.querySelector(".grid-bottom");
+    filtered.filter(v=>v.type===type).forEach(v=>{ grid.innerHTML+=createCard(v); });
   });
 }
 
-// Member channel
-function renderMemberChannel(member){
-  renderContentSections(member);
+// Sidebar overlay
+function toggleSidebar(){ 
+  document.getElementById("sidebarOverlay").classList.toggle("active"); 
 }
 
-// Grid bawah (semua video)
-function renderGridBottom(){
-  const gridContainer = document.getElementById("gridBottom");
-  gridContainer.innerHTML="";
-  const filtered = videos.filter(v=>!v.upcoming);
-  filtered.forEach(v=>{
-    const div = document.createElement("div");
-    div.innerHTML = createCard(v);
-    gridContainer.appendChild(div);
+function renderSidebarContent(){
+  const container=document.getElementById("sidebarContent");
+  container.innerHTML="";
+  for(const key in members){
+    const m=members[key];
+    const div=document.createElement("div");
+    div.className="member";
+    div.innerHTML=`<img src="${m.avatar}"><span>${m.name}</span>`;
+    div.onclick=()=>{
+      renderContentSections(key); toggleSidebar();
+    };
+    container.appendChild(div);
+  }
+  const groups=["Group A","Group B"];
+  groups.forEach(g=>{
+    const div=document.createElement("div");
+    div.className="member";
+    div.innerHTML=`<img src="https://i.imgur.com/6VBx3io.png"><span>${g}</span>`;
+    div.onclick=()=>{
+      renderGroupSection(g); toggleSidebar();
+    };
+    container.appendChild(div);
   });
 }
 
-// Toggle sidebar (for mobile)
-function toggleSidebar(){
-  const sidebar = document.getElementById("sidebar");
-  sidebar.style.display = sidebar.style.display==="flex"?"none":"flex";
-}
+// Placeholder scroll ke group
+function renderGroupSection(g){ alert(`Scroll to ${g} section`); }
 
-// Main
-document.addEventListener("DOMContentLoaded",()=>{
-  fetch("https://opensheet.elk.sh/16IveyFW68vwyVHRIVH9MU0Jblh6HjUQ3PQU_QiE2C8c/videos")
-  .then(res=>res.json())
-  .then(data=>{
-    videos = data.map(v=>({...v, upcoming:v.upcoming==="TRUE" || v.upcoming===true}));
-    renderHomePreview();
-    renderSidebar();
-    renderCategoryMenu();
-    renderContentSections();
-    renderGridBottom();
-  });
-
-  document.getElementById("homeBtn").onclick = ()=>{
-    renderHomePreview();
-    renderContentSections();
-  };
-
-  // Optional: search functionality
-  document.getElementById("searchInput").addEventListener("input", e=>{
-    const query = e.target.value.toLowerCase();
-    renderContentSections();
-    document.querySelectorAll(".card").forEach(card=>{
-      const title = card.querySelector(".title").innerText.toLowerCase();
-      card.style.display = title.includes(query)?"block":"none";
-    });
-  });
+// Load database (ganti ke Sheet JSON-mu)
+fetch("https://opensheet.elk.sh/16IveyFW68vwyVHRIVH9MU0Jblh6HjUQ3PQU_QiE2C8c/pandavva_fansite_video_database")
+.then(res=>res.json())
+.then(data=>{
+  videos=data.sort((a,b)=> new Date(b.date)-new Date(a.date));
+  renderSidebarContent();
+  renderHomePreview();
+  renderCategoryMenu();
+  renderContentSections();
 });
+
+document.getElementById("homeBtn").onclick=()=>{ renderHomePreview(); window.scrollTo({top:0, behavior:"smooth"}); }
