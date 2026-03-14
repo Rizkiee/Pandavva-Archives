@@ -9,15 +9,20 @@
 <body>
 
 <header class="banner">
+  <div class="menu-icon" onclick="toggleSidebar()">☰</div>
   <h1 id="homeBtn">Pandavva Archive</h1>
 </header>
 
+<div class="search-bar">
+  <input type="text" id="searchInput" placeholder="Search videos...">
+</div>
+
 <div class="main-container">
 
-  <!-- Sidebar Member/Grup -->
+  <!-- Sidebar -->
   <aside id="sidebar"></aside>
 
-  <!-- Konten Utama -->
+  <!-- Konten utama -->
   <main id="mainContent">
 
     <!-- Home Preview -->
@@ -34,6 +39,9 @@
 
     <!-- Section Konten Per Kategori / Member -->
     <section id="contentSections"></section>
+
+    <!-- Grid bawah (semua video) -->
+    <section id="gridBottom" class="grid-bottom"></section>
 
   </main>
 
