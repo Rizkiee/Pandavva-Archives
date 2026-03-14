@@ -2,7 +2,7 @@
 let videos=[];
 
 const members={
-  "Pandavva":{name:"Pandavva", avatar:"https://unavatar.io/youtube/@PANDAVVA"},
+  "Pandavva":{name:"Pandavva Official", avatar:"https://unavatar.io/youtube/@PANDAVVA"},
   "Sadewa Sagara":{name:"Sadewa Sagara", avatar:"https://unavatar.io/youtube/@Sadewa_Sagara"},
   "Nakula Nalendra":{name:"Nakula Nalendra", avatar:"https://unavatar.io/youtube/@Nakula_Nalendra"}
 };
@@ -109,7 +109,7 @@ function renderSidebarContent(){
 function renderGroupSection(g){ alert(`Scroll to ${g} section`); }
 
 // Load database (ganti ke Sheet JSON-mu)
-fetch("https://opensheet.elk.sh/16IveyFW68vwyVHRIVH9MU0Jblh6HjUQ3PQU_QiE2C8c/pandavva_fansite_video_database")
+fetch("https://opensheet.elk.sh/16IveyFW68vwyVHRIVH9MU0Jblh6HjUQ3PQU_QiE2C8c/videos")
 .then(res=>res.json())
 .then(data=>{
   videos=data.sort((a,b)=> new Date(b.date)-new Date(a.date));
