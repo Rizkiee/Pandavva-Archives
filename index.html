@@ -1,35 +1,60 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>Pandavva Archive</title>
+
 <link rel="stylesheet" href="style.css">
+
 </head>
 <body>
 
+
+<!-- HEADER -->
 <header>
-  <div class="menu-icon" onclick="toggleSidebar()">☰</div>
-  <h1 id="homeBtn">Pandavva Archive</h1>
+
+<div class="menu-btn">☰</div>
+
+<h1 class="title">Pandavva Archive</h1>
+
 </header>
 
-<!-- Home Section -->
-<section id="homeSection">
-  <h2>Upcoming</h2>
-  <div class="row" id="row-upcoming"></div>
 
-  <h2>Latest</h2>
-  <div class="row" id="row-latest"></div>
 
-  <div class="grid-menu" id="categoryMenu"></div>
-</section>
+<!-- SEARCH -->
+<div class="search-box">
 
-<!-- Category Section -->
-<section id="categorySection" class="hidden"></section>
+<input type="text" id="searchInput" placeholder="Search video...">
 
-<!-- Sidebar Overlay -->
-<div id="sidebarOverlay"></div>
+</div>
+
+
+
+<!-- UPCOMING -->
+<h2 class="section-title">Upcoming</h2>
+
+<div class="video-row" id="upcomingRow"></div>
+
+
+
+<!-- LATEST -->
+<h2 class="section-title">Latest</h2>
+
+<div class="video-row" id="latestRow"></div>
+
+
+
+<!-- CATEGORIES -->
+<h2 class="section-title">Categories</h2>
+
+<div class="category-grid" id="categoryGrid"></div>
+
+
 
 <script src="script.js"></script>
+
 </body>
 </html>
