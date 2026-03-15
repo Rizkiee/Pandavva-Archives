@@ -99,7 +99,7 @@ grid.innerHTML+=`
 
 
 
-fetch("videos.json")
+fetch("https://opensheet.elk.sh/16IveyFW68vwyVHRIVH9MU0Jblh6HjUQ3PQU_QiE2C/videos")
 
 .then(res=>res.json())
 
