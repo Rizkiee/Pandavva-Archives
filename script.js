@@ -38,8 +38,6 @@ ${v.title}
 
 }
 
-
-
 function renderRows(){
 
 const upcomingRow = document.getElementById("upcomingRow")
@@ -48,20 +46,12 @@ const latestRow = document.getElementById("latestRow")
 upcomingRow.innerHTML = ""
 latestRow.innerHTML = ""
 
-
-if(videos.length === 0){
-console.log("videos kosong")
-return
-}
-
-
-// urutkan dari terbaru
 const sorted = [...videos].sort((a,b)=> new Date(b.date) - new Date(a.date))
 
 
-sorted.slice(0,10).forEach(v=>{
+sorted.forEach(v=>{
 
-if(v.type && v.type.toLowerCase() === "upcoming"){
+if(!v.duration || v.duration.trim()===""){
 
 upcomingRow.innerHTML += createVideoCard(v)
 
@@ -74,8 +64,6 @@ latestRow.innerHTML += createVideoCard(v)
 })
 
 }
-
-
 
 function renderCategories(){
 
