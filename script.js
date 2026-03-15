@@ -1,13 +1,12 @@
-let videos=[]
-
+let videos = []
 
 function getID(url){
 
-const regExp=/(?:youtube\.com\/(?:live\/|watch\?v=)|youtu\.be\/)([^?&]+)/
+const regExp = /(?:youtube\.com\/(?:live\/|watch\?v=)|youtu\.be\/)([^?&]+)/
 
-const match=url.match(regExp)
+const match = url.match(regExp)
 
-return match?match[1]:null
+return match ? match[1] : null
 
 }
 
@@ -15,24 +14,22 @@ return match?match[1]:null
 
 function createVideoCard(v){
 
-const id=getID(v.url)
+const id = getID(v.url)
 
-const thumb=`https://i.ytimg.com/vi/${id}/hqdefault.jpg`
+if(!id) return ""
+
+const thumb = `https://i.ytimg.com/vi/${id}/hqdefault.jpg`
 
 return `
 
-<div class="video-card" onclick="window.open('${v.url}')">
+<div class="video-card" onclick="window.open('${v.url}','_blank')">
 
 <div class="video-thumb">
-
 <img src="${thumb}">
-
 </div>
 
 <div class="video-title">
-
 ${v.title}
-
 </div>
 
 </div>
@@ -45,24 +42,34 @@ ${v.title}
 
 function renderRows(){
 
-const upcomingRow=document.getElementById("upcomingRow")
+const upcomingRow = document.getElementById("upcomingRow")
+const latestRow = document.getElementById("latestRow")
 
-const latestRow=document.getElementById("latestRow")
-
-upcomingRow.innerHTML=""
-latestRow.innerHTML=""
+upcomingRow.innerHTML = ""
+latestRow.innerHTML = ""
 
 
-const sorted=videos.sort((a,b)=>new Date(b.date)-new Date(a.date))
+if(videos.length === 0){
+console.log("videos kosong")
+return
+}
+
+
+// urutkan dari terbaru
+const sorted = [...videos].sort((a,b)=> new Date(b.date) - new Date(a.date))
 
 
 sorted.slice(0,10).forEach(v=>{
 
-if(v.type==="upcoming")
-upcomingRow.innerHTML+=createVideoCard(v)
+if(v.type && v.type.toLowerCase() === "upcoming"){
 
-else
-latestRow.innerHTML+=createVideoCard(v)
+upcomingRow.innerHTML += createVideoCard(v)
+
+}else{
+
+latestRow.innerHTML += createVideoCard(v)
+
+}
 
 })
 
@@ -72,20 +79,19 @@ latestRow.innerHTML+=createVideoCard(v)
 
 function renderCategories(){
 
-const grid=document.getElementById("categoryGrid")
+const grid = document.getElementById("categoryGrid")
 
-grid.innerHTML=""
+grid.innerHTML = ""
 
-const types=[...new Set(videos.map(v=>v.type))]
-
+const types = [...new Set(videos.map(v=>v.type))]
 
 types.forEach(type=>{
 
-grid.innerHTML+=`
+grid.innerHTML += `
 
 <div class="category-card">
 
-<img src="placeholder.jpg">
+<img src="https://via.placeholder.com/300x400">
 
 <span>${type}</span>
 
@@ -99,16 +105,21 @@ grid.innerHTML+=`
 
 
 
+// ambil database dari google sheet
 fetch("https://opensheet.elk.sh/16IveyFW68vwyVHRIVH9MU0Jblh6HjUQ3PQU_QiE2C/videos")
 
-.then(res=>res.json())
+.then(res => res.json())
 
-.then(data=>{
+.then(data => {
 
-videos=data
+console.log("DATA DARI SHEET:", data)
+
+videos = data
 
 renderRows()
 
 renderCategories()
 
 })
+
+.catch(err => console.log("ERROR:", err))
